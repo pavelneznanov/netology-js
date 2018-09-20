@@ -10,3 +10,4 @@ node_modules/
 Thumbs.db
 psd/
 build/
+package-lock.json

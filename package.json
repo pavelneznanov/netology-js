@@ -1,14 +1,14 @@
 {
   "name": "js-game",
   "version": "1.0.0",
-  "description": "",
+  "description": "Netology JS game",
   "main": "index.html",
   "scripts": {
     "start": "browser-sync start --server --files \"**/*.*\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Pavel Neznanov",
   "license": "ISC",
   "devDependencies": {
     "browser-sync": "^2.18.8"
