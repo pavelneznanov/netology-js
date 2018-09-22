@@ -10,8 +10,8 @@ class Vector {
     if (vector instanceof Vector) {
       const position = new Vector(this.x, this.y);
       let newPosition = position;
-      newPosition.x += vector.x; 
-      newPosition.y +=  vector.y;
+      newPosition.x += vector.x;
+      newPosition.y += vector.y;
       return newPosition;
     } else {
       throw 'Можно прибавлять к вектору только вектор типа Vector';
@@ -36,38 +36,108 @@ console.log(`Текущее расположение: ${finish.x}:${finish.y}`);
 // Исходное расположение: 30:50
 // Текущее расположение: 40:70¨
 
-class Actor {
+class Actor extends Vector {
   // Контролирует все движущиеся объекты на игровом поле и контролирует их пересечение
   constructor(pos, size, speed) {
+    super();
+    this.pos = new Vector(pos);
+    this.size = new Vector(1, 1);
+    this.speed = new Vector(speed);
+    this.type = '';
 
-    const player = new Vector(this.pos);
-    player.pos
-    console.log(player.pos instanceof Vector)
-
-    let vector = {};
-    vector.posX = 0;
-    vector.posY = 0;
-    vector.sizeX = 0;
-    vector.sizeY = 0;
-    vector.speedX = 0;
-    vector.speedY = 0;
-    
-    pos
     pos
     size
     speed
-    vector
+    console.log(this.pos);
+    console.log(this.size);
+    console.log(this.speed);
+    console.log(this.x);
+    console.log(this.y);
+
+    // let abc = super.plus(start);
+    // abc
+    // console.log(abc.x);
+    // console.log(abc.y);
+
+    // console.log(abc.x);
+    // console.log(abc.y);
+
+
+    // console.log(this.x);
+    // console.log(this.y);
+    console.log(this.pos.x);
+    console.log(this.pos.y);
+    console.log(this.size.x);
+    console.log(this.size.y);
+
+    Object.defineProperty(this, 'type', {
+      value: 'actor',
+      writable: false
+    });
+    Object.defineProperty(this, 'left', {
+      // 30
+      value: 0,
+      writable: false
+    });
+    Object.defineProperty(this, 'top', {
+      // 50
+      value: 0,
+      writable: false
+    });
+    Object.defineProperty(this, 'right', {
+      // 35
+      value: 0,
+      writable: false
+    });
+    Object.defineProperty(this, 'bottom', {
+      // 55
+      value: 0,
+      writable: false
+    });
+
+    // console.log(this.pos instanceof Vector)
+    // console.log(this.pos)
+
+    // if (this.pos instanceof Vector) {
+    //   const position = new Vector(this.x, this.y);
+    //   let newPosition = position;
+    //   position
+    // } else {
+    //   throw error;
+    // }
+
+    // const player = {};
+    // player.pos = this.pos;
+    // console.log(player.pos);
+    // console.log(player.pos instanceof Vector)
+
+    // console.log(this.pos);
+    // console.log(this.size);
+    // console.log(this.speed);
+    // console.log(this.type);
   }
-  isIntersect(movingObject){
+  isIntersect(movingObject) {
+    // const player = new Actor(this.pos, this.size);
+    // player
+    // movingObject
+    // const notIntersected = player.isIntersect(player);
+    // console.log(notIntersected);
+    // console.log(movingObject.)
+    // console.log(movingObject.left);
+    // console.log(movingObject.top);
+    // console.log(movingObject.bottom);
+    // console.log(movingObject.right);
+    // console.log(this.left);
     movingObject
-    console.log(typeof movingObject === 'object')
-    console.log(typeof movingObject === 'object')
-    try {
-      
-    } catch (error) {
+    if (movingObject instanceof Actor) {
+      // const position = new Vector(this.x, this.y);
+      // let newPosition = position;
+      return true;
+    } else {
+      throw (error);
     }
   }
-  act(){
+  act() {
   }
 }
 const items = new Map();
@@ -105,3 +175,75 @@ items.forEach(status);
 // Первая монета: left: 10, top: 10, right: 11, bottom: 11
 // Вторая монета: left: 15, top: 5, right: 16, bottom: 6
 // Игрок подобрал Вторая монета
+
+
+class Level {
+  constructor(grid, actors) {
+    grid
+    actors
+    // this.player;
+    this.height;
+    this.width;
+    this.status = null;
+    this.finishDelay = 1;
+  }
+  isFinished() {
+
+  }
+  actorAt() {
+
+  }
+  obstacleAt() {
+
+  }
+  removeActor() {
+
+  }
+  noMoreActors() {
+
+  }
+  playerTouched() {
+
+  }
+}
+// const grid = [
+//   [undefined, undefined],
+//   ['wall', 'wall']
+// ];
+
+// function MyCoin(title) {
+//   this.type = 'coin';
+//   this.title = title;
+// }
+// MyCoin.prototype = Object.create(Actor);
+// MyCoin.constructor = MyCoin;
+
+// const goldCoin = new MyCoin('Золото');
+// const bronzeCoin = new MyCoin('Бронза');
+// const player = new Actor();
+// const fireball = new Actor();
+
+// const level = new Level(grid, [ goldCoin, bronzeCoin, player, fireball ]);
+
+// level.playerTouched('coin', goldCoin);
+// level.playerTouched('coin', bronzeCoin);
+
+// if (level.noMoreActors('coin')) {
+//   console.log('Все монеты собраны');
+//   console.log(`Статус игры: ${level.status}`);
+// }
+
+// const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
+// if (obstacle) {
+//   console.log(`На пути препятствие: ${obstacle}`);
+// }
+
+// const otherActor = level.actorAt(player);
+// if (otherActor === fireball) {
+//   console.log('Пользователь столкнулся с шаровой молнией');
+// }
+
+// Все монеты собраны
+// Статус игры: won
+// На пути препятствие: wall
+// Пользователь столкнулся с шаровой молнией
