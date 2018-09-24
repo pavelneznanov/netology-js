@@ -49,7 +49,7 @@ class Actor {
     // this.type = 'actor';
     Object.defineProperty(this, 'type', {
       value: 'actor',
-      // writable: false
+      writable: false
     });
     Object.defineProperty(this, 'left', {
       value: this.pos.x,
@@ -169,14 +169,31 @@ class Level {
       return actor.isIntersect(movingObject);
     });
   }
-  obstacleAt() {
-
+  obstacleAt(objectPosition, ObjectSize) {
+    if (!(objectPosition instanceof Vector) || !(ObjectSize instanceof Vector)) {
+      throw new Error('Объект должен быть типа Vector');
+    }
+    if ((objectPosition.y + ObjectSize.y) >= this.height) {
+      return 'lava';
+    }
+    if ((objectPosition.x + ObjectSize.x) >= this.width) {
+      return 'wall';
+    }
+    if ((objectPosition.x) <= 0) {
+      return 'wall';
+    }
+    if ((objectPosition.y) <= 0) {
+      return 'wall';
+    }
   }
-  removeActor(actor) {
-    // Метод удаляет переданный объект с игрового поля. 
-    // Если такого объекта на игровом поле нет, не делает ничего.
-    // actor
-    // console.log(this.actors)
+  removeActor(removeActor) {
+    let findedElements = [];
+    this.actors.forEach(function(actor, i){
+      if (removeActor.type === actor.type) {
+        findedElements.push(i);
+      }
+    })
+    this.actors.splice(findedElements[0],1);
   }
   noMoreActors(actorType) {
     // actorType
@@ -224,7 +241,7 @@ if (otherActor === fireball) {
   console.log('Пользователь столкнулся с шаровой молнией');
 }
 
-// level.removeActor(goldCoin);
+level.removeActor(goldCoin);
 
 
 // Все монеты собраны
