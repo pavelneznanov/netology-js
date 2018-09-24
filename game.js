@@ -41,7 +41,7 @@ class Actor {
 
     // this.type = 'actor';
     // let _type = 'actor';
-    
+
     // Object.defineProperty(this, 'type', {
     //   get: function() {
     //     return _type;
@@ -180,82 +180,100 @@ class Level {
   }
   removeActor(removeActor) {
     let findedElements = [];
-    this.actors.forEach(function(actor, i){
+    this.actors.forEach(function (actor, i) {
       if (removeActor.type === actor.type) {
         findedElements.push(i);
       }
     })
-    this.actors.splice(findedElements[0],1);
+    this.actors.splice(findedElements[0], 1);
   }
   noMoreActors(actorType) {
-    return this.actors.every(function(actor) {
+    return this.actors.every(function (actor) {
       console.log(actorType !== actor.type)
       return actorType === actor.type;
     })
   }
   playerTouched(barrier, movingObject) {
-    barrier
-    movingObject
-
-    if (this.status !== 'null'){
+    // barrier
+    // movingObject
+    
+    if (this.status !== 'null') {
+      
       if (barrier === 'lava' || barrier === 'fireball') {
         this.status = 'lost';
       }
 
+      if (barrier === 'coin' && movingObject !== 'undefinde'){
+
+        this.actors = this.actors.filter(function(actor){
+          if (actor.type !== 'coin') {
+            return actor;
+          }
+        })
+
+        // console.log(this.actors);
+        // console.log(this.actors.some(function(actor){return actor.type === 'coin';}))
+
+        // if (this.actors.some(function(actor){return actor.type === 'coin';})){
+          this.status = 'won';
+        // }
+
+      }
     }
   }
 }
 
-const grid = [
-  [undefined, undefined],
-  ['wall', 'wall']
-];
-
-function MyCoin(title) {
-  this.type = 'coin';
-  this.title = title;
-}
-MyCoin.prototype = Object.create(Actor);
-MyCoin.constructor = MyCoin;
-
-const goldCoin = new MyCoin('Золото');
-const bronzeCoin = new MyCoin('Бронза');
-const player = new Actor();
-const fireball = new Actor();
-
-const level = new Level(grid, [goldCoin, bronzeCoin, player, fireball]);
-
-level.playerTouched('coin', goldCoin);
-level.playerTouched('coin', bronzeCoin);
-
-if (level.noMoreActors('coin')) {
-  console.log('Все монеты собраны');
-  console.log(`Статус игры: ${level.status}`);
-}
-
-const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
-if (obstacle) {
-  console.log(`На пути препятствие: ${obstacle}`);
-}
-
-const otherActor = level.actorAt(player);
-if (otherActor === fireball) {
-  console.log('Пользователь столкнулся с шаровой молнией');
-}
-
 // const grid = [
-//   new Array(3),
-//   ['wall', 'wall', 'lava']
+//   [undefined, undefined],
+//   ['wall', 'wall']
 // ];
-// const level = new Level(grid);
+
+// function MyCoin(title) {
+//   this.type = 'coin';
+//   this.title = title;
+// }
+// MyCoin.prototype = Object.create(Actor);
+// MyCoin.constructor = MyCoin;
+
+// const goldCoin = new MyCoin('Золото');
+// const bronzeCoin = new MyCoin('Бронза');
+// const player = new Actor();
+// const fireball = new Actor();
+
+// const level = new Level(grid, [goldCoin, bronzeCoin, player, fireball]);
+
+// level.playerTouched('coin', goldCoin);
+// level.playerTouched('coin', bronzeCoin);
+
+// if (level.noMoreActors('coin')) {
+//   console.log('Все монеты собраны');
+//   console.log(`Статус игры: ${level.status}`);
+// }
+
+// const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
+// if (obstacle) {
+//   console.log(`На пути препятствие: ${obstacle}`);
+// }
+
+// const otherActor = level.actorAt(player);
+// if (otherActor === fireball) {
+//   console.log('Пользователь столкнулся с шаровой молнией');
+// }
+
+const grid = [
+  new Array(3),
+  ['wall', 'wall', 'lava']
+];
+const level = new Level(grid);
 // runLevel(level, DOMDisplay);
 
-// class DOMDisplay {
-//   // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
-//   constructor(dom, level) {
-
-//   }
-// }
+class DOMDisplay {
+  // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
+  constructor(dom, level) {
+    // dom
+    // level
+  }
+}
 
 // const schema = [
 //   '         ',
@@ -271,16 +289,17 @@ if (otherActor === fireball) {
 //   '@': Player,
 //   '=': HorizontalFireball
 // }
+
 // const parser = new LevelParser(actorDict);
 // const level = parser.parse(schema);
 // DOMDisplay(document.body, level);
 
 
-// function runLevel(level) {
-//   // Инициализирует процесс регулярной отрисовки текущего состояния 
-// игрового поля и обработку событий клавиатуры.
+function runLevel(level) {
+  // Инициализирует процесс регулярной отрисовки текущего состояния 
+  // игрового поля и обработку событий клавиатуры.
 
-// }
+}
 
 // const schema = [
 //   '         ',
@@ -296,6 +315,7 @@ if (otherActor === fireball) {
 //   '@': Player,
 //   '=': HorizontalFireball
 // }
+
 // const parser = new LevelParser(actorDict);
 // const level = parser.parse(schema);
 // runLevel(level, DOMDisplay)
