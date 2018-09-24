@@ -26,7 +26,6 @@ class Vector {
 }
 
 class Actor {
-  // Контролирует все движущиеся объекты на игровом поле и контролирует их пересечение
   constructor(pos, size, speed) {
     pos = pos || new Vector(0, 0);
     size = size || new Vector(1, 1);
@@ -38,64 +37,32 @@ class Actor {
     this.size = size;
     this.speed = speed;
     this.id = Math.random();
-
-    // this.type = 'actor';
-    // let _type = 'actor';
-
-    // Object.defineProperty(this, 'type', {
-    //   get: function() {
-    //     return _type;
-    //   },
-    //   set: function(setType) {
-    //     if (setType instanceof Actor) {
-    //       _type = setType;
-    //     } else {
-    //       new Error();
-    //     }
-    //   }
-    // });
-    // Object.defineProperty(this, 'left', {
-    //   get: function() {
-    //     return this.pos.x;
-    //   },
-    // });
-    // Object.defineProperty(this, 'top', {
-    //   get: function() {
-    //     return this.pos.y;
-    //   },
-    // });
-    // Object.defineProperty(this, 'right', {
-    //   get: function() {
-    //     return this.pos.x + this.size.x;
-    //   },
-    // });
-    // Object.defineProperty(this, 'bottom', {
-    //   get: function() {
-    //     return this.pos.y + this.size.y;
-    //   },
-    // });
-
-    Object.defineProperty(this, 'type', {
-      value: 'actor',
-      writable: false
-    });
-    Object.defineProperty(this, 'left', {
-      value: this.pos.x,
-      writable: false
-    });
-    Object.defineProperty(this, 'top', {
-      value: this.pos.y,
-      writable: false
-    });
-    Object.defineProperty(this, 'right', {
-      value: this.pos.x + this.size.x,
-      writable: false
-    });
-    Object.defineProperty(this, 'bottom', {
-      value: this.pos.y + this.size.y,
-      writable: false
-    });
   }
+
+  get type() {
+    return 'actor';
+  }
+  // set type(newType) {
+    // this.type === newType;
+    // if (newType instanceof Actor) {
+    //     this.type = newType;
+    //   } else {
+    //     new Error();
+    // }
+  // }
+  get left() {
+    return this.pos.x;
+  }
+  get top() {
+    return this.pos.y;
+  }
+  get right() {
+    return this.pos.x + this.size.x;
+  }
+  get bottom() {
+    return this.pos.y + this.size.y;
+  }
+
   isIntersect(movingObject) {
     if (!movingObject || !(movingObject instanceof Actor)) {
       throw new Error('Объект должен быть типа Actor');
@@ -125,13 +92,10 @@ class Level {
   constructor(grid, actors) {
     this.grid = grid || [];
     this.actors = actors || [];
-
     // actors
-
     this.player = new Actor();
     // this.player.type = 'player';
     // console.log(this.player.type);
-
     this.height = this.grid.length;
     this.width = this.grid.reduce(function (acc, row) {
       let innerRow = row || [];
