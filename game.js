@@ -1,10 +1,9 @@
 'use strict';
 
 class Vector {
-  // Контролирует расположение объектов в двумерном пространстве и управляет их размером и перемещением
-  constructor(x, y) {
-    this.x = x || 0;
-    this.y = y || 0;
+  constructor(x = 0, y = 0) {
+    this.x = x;
+    this.y = y;
   }
   plus(vector) {
     if (vector instanceof Vector) {
@@ -25,13 +24,6 @@ class Vector {
     return newPosition;
   }
 }
-// const start = new Vector(30, 50);
-// const moveTo = new Vector(5, 10);
-// const finish = start.plus(moveTo.times(2));
-// console.log(`Исходное расположение: ${start.x}:${start.y}`);
-// console.log(`Текущее расположение: ${finish.x}:${finish.y}`);
-// Исходное расположение: 30:50
-// Текущее расположение: 40:70¨
 
 class Actor {
   // Контролирует все движущиеся объекты на игровом поле и контролирует их пересечение
@@ -46,7 +38,43 @@ class Actor {
     this.size = size;
     this.speed = speed;
     this.id = Math.random();
+
     // this.type = 'actor';
+    // let _type = 'actor';
+    
+    // Object.defineProperty(this, 'type', {
+    //   get: function() {
+    //     return _type;
+    //   },
+    //   set: function(setType) {
+    //     if (setType instanceof Actor) {
+    //       _type = setType;
+    //     } else {
+    //       new Error();
+    //     }
+    //   }
+    // });
+    // Object.defineProperty(this, 'left', {
+    //   get: function() {
+    //     return this.pos.x;
+    //   },
+    // });
+    // Object.defineProperty(this, 'top', {
+    //   get: function() {
+    //     return this.pos.y;
+    //   },
+    // });
+    // Object.defineProperty(this, 'right', {
+    //   get: function() {
+    //     return this.pos.x + this.size.x;
+    //   },
+    // });
+    // Object.defineProperty(this, 'bottom', {
+    //   get: function() {
+    //     return this.pos.y + this.size.y;
+    //   },
+    // });
+
     Object.defineProperty(this, 'type', {
       value: 'actor',
       writable: false
@@ -92,52 +120,18 @@ class Actor {
   act() {
   }
 }
-// const items = new Map();
-// const player = new Actor();
-// items.set('Игрок', player);
-// items.set('Первая монета', new Actor(new Vector(10, 10)));
-// items.set('Вторая монета', new Actor(new Vector(15, 5)));
-// function position(item) {
-//   return ['left', 'top', 'right', 'bottom']
-//     .map(side => `${side}: ${item[side]}`)
-//     .join(', ');
-// }
-// function movePlayer(x, y) {
-//   player.pos = player.pos.plus(new Vector(x, y));
-// }
-// function status(item, title) {
-//   console.log(`${title}: ${position(item)}`);
-//   if (player.isIntersect(item)) {
-//     console.log(`Игрок подобрал ${title}`);
-//   }
-// }
-// items.forEach(status);
-// movePlayer(10, 10);
-// items.forEach(status);
-// movePlayer(5, -5);
-// items.forEach(status);
-// Игрок: left: 0, top: 0, right: 1, bottom: 1
-// Первая монета: left: 10, top: 10, right: 11, bottom: 11
-// Вторая монета: left: 15, top: 5, right: 16, bottom: 6
-// Игрок: left: 10, top: 10, right: 11, bottom: 11
-// Первая монета: left: 10, top: 10, right: 11, bottom: 11
-// Игрок подобрал Первая монета
-// Вторая монета: left: 15, top: 5, right: 16, bottom: 6
-// Игрок: left: 15, top: 5, right: 16, bottom: 6
-// Первая монета: left: 10, top: 10, right: 11, bottom: 11
-// Вторая монета: left: 15, top: 5, right: 16, bottom: 6
-// Игрок подобрал Вторая монета
-
 
 class Level {
-  // Реализуют схему игрового поля конкретного уровня,
-  // контролируют все движущиеся объекты на нём и реализуют логику игры.
   constructor(grid, actors) {
     this.grid = grid || [];
     this.actors = actors || [];
-    // this.player = new Actor();
+
+    // actors
+
+    this.player = new Actor();
     // this.player.type = 'player';
-    // console.log(this.player);
+    // console.log(this.player.type);
+
     this.height = this.grid.length;
     this.width = this.grid.reduce(function (acc, row) {
       let innerRow = row || [];
@@ -157,8 +151,6 @@ class Level {
     return false;
   }
   actorAt(movingObject) {
-    // Определяет, расположен ли какой-то другой движущийся
-    // объект в переданной позиции, и если да, вернёт этот объект.
     if (!movingObject || !(movingObject instanceof Actor)) {
       throw new Error('Объект должен быть типа Actor');
     }
@@ -196,11 +188,21 @@ class Level {
     this.actors.splice(findedElements[0],1);
   }
   noMoreActors(actorType) {
-    // actorType
+    return this.actors.every(function(actor) {
+      console.log(actorType !== actor.type)
+      return actorType === actor.type;
+    })
   }
   playerTouched(barrier, movingObject) {
-    // barrier
-    // movingObject
+    barrier
+    movingObject
+
+    if (this.status !== 'null'){
+      if (barrier === 'lava' || barrier === 'fireball') {
+        this.status = 'lost';
+      }
+
+    }
   }
 }
 
@@ -240,15 +242,6 @@ const otherActor = level.actorAt(player);
 if (otherActor === fireball) {
   console.log('Пользователь столкнулся с шаровой молнией');
 }
-
-level.removeActor(goldCoin);
-
-
-// Все монеты собраны
-// Статус игры: won
-// На пути препятствие: wall
-// Пользователь столкнулся с шаровой молнией
-
 
 // const grid = [
 //   new Array(3),
