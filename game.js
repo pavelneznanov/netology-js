@@ -92,8 +92,33 @@ class Level {
   constructor(grid, actors) {
     this.grid = grid || [];
     this.actors = actors || [];
-    // actors
-    this.player = new Actor();
+
+    // this.actors.forEach(function(actor){
+    //   if (actor.type === 'player') {
+    //     this.player = actor;
+    //   }
+    // })
+
+    this.player = this.actors.find(function(actor){
+      return actor.type === 'player';
+    })
+
+    // var found = array1.find(function(element) {
+    //   return element > 10;
+    // });
+
+    // this.player;
+    // this.actors.forEach(function(actor){
+    //   if (actor.type === 'player') {
+    //     this.player = actor;
+    //   }
+    // })
+
+    // this.player = this.actors.map(function(actor){
+    //   return actor.type === 'player';
+    // })
+
+    // this.player = this;
     // this.player.type = 'player';
     // console.log(this.player.type);
     this.height = this.grid.length;
@@ -224,20 +249,79 @@ class Level {
 //   console.log('Пользователь столкнулся с шаровой молнией');
 // }
 
-const grid = [
-  new Array(3),
-  ['wall', 'wall', 'lava']
-];
-const level = new Level(grid);
-// runLevel(level, DOMDisplay);
 
-class DOMDisplay {
-  // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
-  constructor(dom, level) {
-    // dom
-    // level
+
+
+
+
+class LevelParser {
+  constructor(dictionary){
+    this.dictionary = dictionary;
+  }
+  actorFromSymbol(stringSymbol){
+    stringSymbol
+  }
+  obstacleFromSymbol(){
+
+  }
+  createGrid(){
+
+  }
+  createActors(){
+
+  }
+  parse(){
+
   }
 }
+
+const plan = [
+  ' @ ',
+  'x!x'
+];
+
+const actorsDict = Object.create(null);
+actorsDict['@'] = Actor;
+
+const parser = new LevelParser(actorsDict);
+const level = parser.parse(plan);
+
+level.grid.forEach((line, y) => {
+  line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
+});
+
+level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
+// (0:0) undefined
+// (1:0) undefined
+// (2:0) undefined
+// (0:1) wall
+// (1:1) lava
+// (2:1) wall
+// (1:0) actor
+
+
+
+
+
+
+
+
+
+
+// const grid = [
+//   new Array(3),
+//   ['wall', 'wall', 'lava']
+// ];
+// const level = new Level(grid);
+// runLevel(level, DOMDisplay);
+
+// class DOMDisplay {
+  // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
+  // constructor(dom, level) {
+    // dom
+    // level
+  // }
+// }
 
 // const schema = [
 //   '         ',
@@ -259,11 +343,15 @@ class DOMDisplay {
 // DOMDisplay(document.body, level);
 
 
-function runLevel(level) {
+// function runLevel(level, domDisplay) {
   // Инициализирует процесс регулярной отрисовки текущего состояния 
   // игрового поля и обработку событий клавиатуры.
+  // level
+  // domDisplay
 
-}
+  // Функция возвращает промис, который разрешится статусом завершения игры, строка.
+  // С учетом реализации класса Level он может принимать значения won или lost.
+// }
 
 // const schema = [
 //   '         ',
@@ -279,7 +367,6 @@ function runLevel(level) {
 //   '@': Player,
 //   '=': HorizontalFireball
 // }
-
 // const parser = new LevelParser(actorDict);
 // const level = parser.parse(schema);
 // runLevel(level, DOMDisplay)
