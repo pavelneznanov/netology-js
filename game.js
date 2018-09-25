@@ -43,12 +43,12 @@ class Actor {
     return 'actor';
   }
   // set type(newType) {
-    // this.type === newType;
-    // if (newType instanceof Actor) {
-    //     this.type = newType;
-    //   } else {
-    //     new Error();
-    // }
+  // this.type === newType;
+  // if (newType instanceof Actor) {
+  //     this.type = newType;
+  //   } else {
+  //     new Error();
+  // }
   // }
   get left() {
     return this.pos.x;
@@ -92,35 +92,9 @@ class Level {
   constructor(grid, actors) {
     this.grid = grid || [];
     this.actors = actors || [];
-
-    // this.actors.forEach(function(actor){
-    //   if (actor.type === 'player') {
-    //     this.player = actor;
-    //   }
-    // })
-
-    this.player = this.actors.find(function(actor){
+    this.player = this.actors.find(function (actor) {
       return actor.type === 'player';
     })
-
-    // var found = array1.find(function(element) {
-    //   return element > 10;
-    // });
-
-    // this.player;
-    // this.actors.forEach(function(actor){
-    //   if (actor.type === 'player') {
-    //     this.player = actor;
-    //   }
-    // })
-
-    // this.player = this.actors.map(function(actor){
-    //   return actor.type === 'player';
-    // })
-
-    // this.player = this;
-    // this.player.type = 'player';
-    // console.log(this.player.type);
     this.height = this.grid.length;
     this.width = this.grid.reduce(function (acc, row) {
       let innerRow = row || [];
@@ -134,7 +108,7 @@ class Level {
     this.finishDelay = 1;
   }
   isFinished() {
-    if (this.status !== 'null' && this.finishDelay < 0) {
+    if (this.status && this.finishDelay < 0) {
       return true;
     }
     return false;
@@ -157,140 +131,127 @@ class Level {
     if ((objectPosition.y + ObjectSize.y) >= this.height) {
       return 'lava';
     }
-    if ((objectPosition.x + ObjectSize.x) >= this.width) {
+    if ((objectPosition.y + ObjectSize.y) >= this.height) {
+      return 'lava';
+    }
+    if ((objectPosition.x + ObjectSize.x) > this.width) {
       return 'wall';
     }
-    if ((objectPosition.x) <= 0) {
+    if (objectPosition.x < 0) {
       return 'wall';
     }
-    if ((objectPosition.y) <= 0) {
+    if (objectPosition.y < 0) {
       return 'wall';
     }
+    let actor = new Actor(objectPosition, ObjectSize);
+    let obstacleWall = false;
+    let obstacleLava = false;
+    this.grid.forEach(function (row, y) {
+      row.forEach(function (column, x) {
+        let currentCell = new Actor(new Vector(x, y));
+        if (actor.isIntersect(currentCell)) {
+          if (column === 'wall') {
+            obstacleWall = true;
+          }
+          if (column === 'lava') {
+            obstacleLava = true;
+          }
+        }
+      })
+    })
+    if (obstacleWall) {
+      return 'wall';
+    }
+    if (obstacleLava) {
+      return 'lava';
+    }
+    return undefined;
   }
   removeActor(removeActor) {
-    let findedElements = [];
+    let foundElements = [];
     this.actors.forEach(function (actor, i) {
       if (removeActor.type === actor.type) {
-        findedElements.push(i);
+        foundElements.push(i);
       }
     })
-    this.actors.splice(findedElements[0], 1);
+    this.actors.splice(foundElements[0], 1);
   }
   noMoreActors(actorType) {
-    return this.actors.every(function (actor) {
-      console.log(actorType !== actor.type)
-      return actorType === actor.type;
+    return !this.actors.some(function (actor) {
+      return actorType == actor.type;
     })
   }
   playerTouched(barrier, movingObject) {
-    // barrier
-    // movingObject
-    
-    if (this.status !== 'null') {
-      
-      if (barrier === 'lava' || barrier === 'fireball') {
-        this.status = 'lost';
-      }
-
-      if (barrier === 'coin' && movingObject !== 'undefinde'){
-
-        this.actors = this.actors.filter(function(actor){
-          if (actor.type !== 'coin') {
-            return actor;
-          }
-        })
-
-        // console.log(this.actors);
-        // console.log(this.actors.some(function(actor){return actor.type === 'coin';}))
-
-        // if (this.actors.some(function(actor){return actor.type === 'coin';})){
-          this.status = 'won';
-        // }
-
+    if (this.status) {
+      return;
+    }
+    if (barrier === 'lava' || barrier === 'fireball') {
+      this.status = 'lost';
+      return;
+    }
+    if (barrier === 'coin' && movingObject) {
+      this.removeActor(movingObject);
+      if (this.noMoreActors('coin')) {
+        this.status = 'won';
       }
     }
   }
 }
 
-// const grid = [
-//   [undefined, undefined],
-//   ['wall', 'wall']
+// class LevelParser {
+//   constructor(dictionary) {
+//     this.dictionary = dictionary;
+
+//     console.log(this.dictionary);
+//     console.log(this.dictionary['@']);
+//   }
+//   actorFromSymbol(symbolValue) {
+//     symbolValue
+//     // if (!symbolValue) {
+//     //   return undefined;
+//     // }
+//     symbolValue
+//     for (let symbol in this.dictionary) {
+//       if (symbolValue === symbol) {
+//         return new Actor();
+//       }
+//     }
+//   }
+//   obstacleFromSymbol() {
+
+//   }
+//   createGrid() {
+
+//   }
+//   createActors() {
+
+//   }
+//   parse() {
+
+//   }
+// }
+
+
+
+// const plan = [
+//   ' @ ',
+//   'x!x'
 // ];
 
-// function MyCoin(title) {
-//   this.type = 'coin';
-//   this.title = title;
-// }
-// MyCoin.prototype = Object.create(Actor);
-// MyCoin.constructor = MyCoin;
+// let test = new LevelParser(plan);
+// test.actorFromSymbol('');
 
-// const goldCoin = new MyCoin('Золото');
-// const bronzeCoin = new MyCoin('Бронза');
-// const player = new Actor();
-// const fireball = new Actor();
+// const actorsDict = Object.create(null);
+// actorsDict['@'] = Actor;
 
-// const level = new Level(grid, [goldCoin, bronzeCoin, player, fireball]);
+// const parser = new LevelParser(actorsDict);
+// const level = parser.parse(plan);
 
-// level.playerTouched('coin', goldCoin);
-// level.playerTouched('coin', bronzeCoin);
+// level.grid.forEach((line, y) => {
+//   line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
+// });
 
-// if (level.noMoreActors('coin')) {
-//   console.log('Все монеты собраны');
-//   console.log(`Статус игры: ${level.status}`);
-// }
-
-// const obstacle = level.obstacleAt(new Vector(1, 1), player.size);
-// if (obstacle) {
-//   console.log(`На пути препятствие: ${obstacle}`);
-// }
-
-// const otherActor = level.actorAt(player);
-// if (otherActor === fireball) {
-//   console.log('Пользователь столкнулся с шаровой молнией');
-// }
-
-
-
-
-
-
-class LevelParser {
-  constructor(dictionary){
-    this.dictionary = dictionary;
-  }
-  actorFromSymbol(stringSymbol){
-    stringSymbol
-  }
-  obstacleFromSymbol(){
-
-  }
-  createGrid(){
-
-  }
-  createActors(){
-
-  }
-  parse(){
-
-  }
-}
-
-const plan = [
-  ' @ ',
-  'x!x'
-];
-
-const actorsDict = Object.create(null);
-actorsDict['@'] = Actor;
-
-const parser = new LevelParser(actorsDict);
-const level = parser.parse(plan);
-
-level.grid.forEach((line, y) => {
-  line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
-});
-
-level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
+// level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
 // (0:0) undefined
 // (1:0) undefined
 // (2:0) undefined
