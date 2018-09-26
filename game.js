@@ -198,57 +198,87 @@ class Level {
   }
 }
 
-// class LevelParser {
-//   constructor(dictionary) {
-//     this.dictionary = dictionary;
+const grid = [
+  new Array(3),
+  ['wall', 'wall', 'lava']
+];
+// const level = new Level(grid);
+// runLevel(level, DOMDisplay);
 
-//     console.log(this.dictionary);
-//     console.log(this.dictionary['@']);
-//   }
-//   actorFromSymbol(symbolValue) {
-//     symbolValue
-//     // if (!symbolValue) {
-//     //   return undefined;
-//     // }
-//     symbolValue
-//     for (let symbol in this.dictionary) {
-//       if (symbolValue === symbol) {
-//         return new Actor();
-//       }
-//     }
-//   }
-//   obstacleFromSymbol() {
+class LevelParser {
+  constructor(dictionary) {
+    this.dictionary = dictionary;
+    // console.log(this.dictionary);
+    // console.log(this.dictionary['@']);
+  }
+  actorFromSymbol(symbolValue) {
+    if (!symbolValue) {
+      return;
+    }
+    return this.dictionary[symbolValue];
+  }
+  obstacleFromSymbol(symbolValue) {
+    symbolValue
+    if (symbolValue === 'x') {
+      return 'wall';
+    }
+    if (symbolValue === '!') {
+      return 'lava';
+    }
+    return;
+  }
+  createGrid(row) {
+    if (row.length === 0) {
+      return [];
+    }
+    let splitRow = row.map(function(row){
+      return row.split('');
+    })
+    splitRow = splitRow.map(function(row){
+      row = row.map(function(cell){
+        if (cell === 'x') {
+          return cell = 'wall';
+        }
+        if (cell === '!') {
+          return cell = 'lava';
+        }
+        if (cell === ' ') {
+          return ;
+        }
+        return cell;
+      })
+      return row;
+    })
+    return splitRow;
+  }
+  createActors() {
 
-//   }
-//   createGrid() {
+  }
+  parse() {
 
-//   }
-//   createActors() {
+  }
+}
 
-//   }
-//   parse() {
+const plan = [
+  ' @ ',
+  'x!x'
+];
 
-//   }
-// }
+const actorsDict = Object.create(null);
+actorsDict['@'] = Actor;
 
+const parser = new LevelParser(actorsDict);
+const level = parser.parse(plan);
 
-
-// const plan = [
-//   ' @ ',
-//   'x!x'
-// ];
-
-// let test = new LevelParser(plan);
-// test.actorFromSymbol('');
-
-// const actorsDict = Object.create(null);
-// actorsDict['@'] = Actor;
-
-// const parser = new LevelParser(actorsDict);
-// const level = parser.parse(plan);
+// let abc = parser.actorFromSymbol('@'); //!!!
+// abc
+// let abc2 = parser.obstacleFromSymbol('x'); //!!!
+// abc2
+let abc3 = parser.createGrid(plan); //!!!
+abc3
 
 // level.grid.forEach((line, y) => {
-//   line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
+  // line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
 // });
 
 // level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
@@ -269,12 +299,7 @@ class Level {
 
 
 
-// const grid = [
-//   new Array(3),
-//   ['wall', 'wall', 'lava']
-// ];
-// const level = new Level(grid);
-// runLevel(level, DOMDisplay);
+
 
 // class DOMDisplay {
   // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
