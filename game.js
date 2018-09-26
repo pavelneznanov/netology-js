@@ -198,10 +198,10 @@ class Level {
   }
 }
 
-const grid = [
-  new Array(3),
-  ['wall', 'wall', 'lava']
-];
+// const grid = [
+  // new Array(3),
+  // ['wall', 'wall', 'lava']
+// ];
 // const level = new Level(grid);
 // runLevel(level, DOMDisplay);
 
@@ -251,11 +251,42 @@ class LevelParser {
     })
     return splitRow;
   }
-  createActors() {
+  createActors(gridItems) {
+    // gridItems
+    if (gridItems.length === 0) {
+      return [];
+    }
+    
+    let emptyItems;
+    emptyItems = !gridItems.some(function(cell){
+      return cell === undefined;
+    })
+    if (emptyItems) {
+      return [];
+    }
 
+    // let abcc =  gridItems.map(function(row, x){
+      return gridItems.map(function(row, x){
+      // row
+      // x
+      return row.map(function(cell, y){
+        if (cell === undefined) {
+          return;
+        }
+        // cell
+        // x
+        // y
+        // return this.actorFromSymbol(cell);
+        return new Actor(new Vector(x, y));
+      })
+    })
+    // abcc
   }
-  parse() {
-
+  parse(plan) {
+    plan
+    let actors = this.createActors(plan); // сейчас не дописан
+    actors
+    return new Level(this.createGrid(plan), actors);
   }
 }
 
@@ -274,11 +305,15 @@ const level = parser.parse(plan);
 // abc
 // let abc2 = parser.obstacleFromSymbol('x'); //!!!
 // abc2
+// let abc3 = parser.createGrid(plan); //!!!
+// abc3
 let abc3 = parser.createGrid(plan); //!!!
-abc3
+// abc3
+let abc4 = parser.createActors(abc3);
+// abc4
 
 // level.grid.forEach((line, y) => {
-  // line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
+//   line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
 // });
 
 // level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
