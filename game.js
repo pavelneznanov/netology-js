@@ -38,18 +38,9 @@ class Actor {
     this.speed = speed;
     this.id = Math.random();
   }
-
   get type() {
     return 'actor';
   }
-  // set type(newType) {
-  // this.type === newType;
-  // if (newType instanceof Actor) {
-  //     this.type = newType;
-  //   } else {
-  //     new Error();
-  // }
-  // }
   get left() {
     return this.pos.x;
   }
@@ -62,7 +53,6 @@ class Actor {
   get bottom() {
     return this.pos.y + this.size.y;
   }
-
   isIntersect(movingObject) {
     if (!movingObject || !(movingObject instanceof Actor)) {
       throw new Error('Объект должен быть типа Actor');
@@ -325,17 +315,6 @@ let abc4 = parser.createActors(abc3);
 // (2:1) wall
 // (1:0) actor
 
-
-
-
-
-
-
-
-
-
-
-
 // class DOMDisplay {
 // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
 // constructor(dom, level) {
@@ -393,9 +372,6 @@ let abc4 = parser.createActors(abc3);
 // runLevel(level, DOMDisplay)
 //   .then(status => console.log(`Игрок ${status}`));
 
-
-
-
 class Fireball extends Actor {
   constructor(cords, speed) {
     super();
@@ -436,9 +412,49 @@ class Fireball extends Actor {
   }
 }
 
+// let testCords = new Vector(1,1);
+// let testSpeed = 5;
+// let testTime = 4;
+// let testGrid = [
+// new Array(3),
+// ['wall', 'wall', 'lava']
+// ];
+// let testLevel = new Level(testGrid);
+// let testFireball = new Fireball(testCords, testSpeed);
+// let test1 = testFireball.act(testTime, testGrid);
 
+class HorizontalFireball extends Fireball {
+  constructor(cords) {
+    super();
+    this.pos = cords;
+    this.size = new Vector(1, 1);
+    this.speed = new Vector(2, 0);
+  }
+  get type() {
+    return 'fireball';
+  }
+}
 
+class VerticalFireball extends Fireball {
+  constructor(cords) {
+    super();
+    this.pos = cords;
+    this.size = new Vector(1, 1);
+    this.speed = new Vector(0, 2);
+  }
+  get type() {
+    return 'fireball';
+  }
+}
 
+class FireRain extends Fireball {
+  constructor(cords) {
+    super();
+    this.pos = cords;
+    this.size = new Vector(1, 1);
+    this.speed = new Vector(0, 3);
+  }
+}
 
 class Coin extends Actor {
   constructor() {
@@ -477,10 +493,6 @@ class Coin extends Actor {
     // Получает новую позицию объекта и задает её как текущую. Ничего не возвращает.
   }
 }
-
-
-
-
 
 class Player extends Actor {
   constructor(position) {
