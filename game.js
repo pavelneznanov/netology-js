@@ -376,9 +376,7 @@ class Fireball extends Actor {
   constructor(cords, speed) {
     super();
     this.pos = cords;
-    this.size = new Vector(1, 1);
     this.speed = speed;
-    this.cords = cords;
   }
   get type() {
     return 'fireball';
@@ -393,22 +391,13 @@ class Fireball extends Actor {
     this.speed.y = -this.speed.y;
   }
   act(time, level) {
-    let newPosition = this.getNextPosition(time);
-    let abc = level.obstacleAt(this.pos, this.size);
-    // let abc2 = level.obstacleAt(newPosition, this.size);
-    if (!abc) {
+    let checkBarrie = level.obstacleAt(this.pos, this.size);
+    if (!checkBarrie) {
       this.pos = this.getNextPosition(time);
     }
-    if (abc) {
-      handleObstacle();
+    if (checkBarrie) {
+      this.handleObstacle();
     }
-    // 2 Выяснить, не пересечется ли в следующей позиции объект 
-    // с каким-либо препятствием. Пересечения с другими движущимися 
-    // объектами учитывать не нужно.
-    
-    // 4 Если объект пересекается с препятствием, то необходимо обработать 
-    // это событие. При этом текущее положение остается прежним.
-
   }
 }
 
@@ -454,50 +443,56 @@ class FireRain extends Fireball {
     this.size = new Vector(1, 1);
     this.speed = new Vector(0, 3);
   }
+  // handleObstacle() {
+  //   // this.speed.x = -this.speed.x;
+  //   this.speed.y = -this.speed.y;
+  // }
 }
 
+// let testfirerain = new FireRain(new Vector(0, -3));
+// testfirerain.handleObstacle();
+// testfirerain.handleObstacle();
+// testfirerain
+
+
 class Coin extends Actor {
-  constructor() {
+  constructor(cords) {
     super();
-    this.pos = new Vector(0.2, 0.1)
+    // this.pos = new Vector((cords.x + 0.2), (cords.y + 0.1));
     this.size = new Vector(0.6, 0.6);
     this.springSpeed = 8;
     this.springDist = 0.07;
-    this.spring; //случайное число от 0 до 2π.
+    this.spring = 2 * Math.PI;
   }
   get type() {
     return 'coin';
   }
-  updateSpring(time = 0) {
-    time
-
-    // Ничего не возвращает. Обновляет текущую фазу spring, 
-    // увеличив её на скорость springSpeed, умноженную на время.
+  updateSpring(time = 1) {
+    this.spring = this.spring + (this.springSpeed * time);
   }
   getSpringVector() {
-    // Создает и возвращает вектор подпрыгивания. Не принимает аргументов.
-    // Так как подпрыгивание происходит только по оси Y, 
-    // то координата X вектора всегда равна нулю.
-    // Координата Y вектора равна синусу текущей фазы, умноженному на радиус.
+    return new Vector(0, ((Math.sin(this.spring)) * this.springDist));
   }
   getNextPosition(time = 1) {
+    // Зачем принимаем время??
+
     // Обновляет текущую фазу, создает и возвращает вектор новой позиции монетки.
     // Принимает один аргумент — время, число, по умолчанию 1.
     // Новый вектор равен базовому вектору положения, увеличенному 
     // на вектор подпрыгивания. Увеличивать нужно именно базовый 
     // вектор положения, который получен в конструкторе, а не текущий.
+    let springVector = getSpringVector();
+    return new Vector((this.pos.x + springVector.x), (this.pos.y + springVector.y));
   }
   act(time) {
-    time
-    // Принимает один аргумент — время.
-    // Получает новую позицию объекта и задает её как текущую. Ничего не возвращает.
+    this.pos = getNextPosition(time);
   }
 }
 
 class Player extends Actor {
-  constructor(position) {
+  constructor(cords) {
     super();
-    // this.pos = new Vector(position.x, (position.y - 0.5));
+    this.pos = new Vector((cords.x), (cords.y - 0.5));
     this.size = new Vector(0.8, 1.5);
     this.speed = new Vector(0, 0);
   }
