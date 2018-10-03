@@ -188,22 +188,12 @@ class Level {
   }
 }
 
-// const grid = [
-// new Array(3),
-// ['wall', 'wall', 'lava']
-// ];
-// const level = new Level(grid);
-// runLevel(level, DOMDisplay);
-
 class LevelParser {
   constructor(dictionary) {
-    this.dictionary = dictionary;
+    this.dictionary = Object.assign({}, dictionary);
   }
-  actorFromSymbol(symbolValue) {
-    if (!symbolValue) {
-      return undefined;
-    }
-    return this.dictionary[symbolValue];
+  actorFromSymbol(sym) {
+    return this.dictionary[sym];
   }
   obstacleFromSymbol(symbolValue) {
     symbolValue
@@ -213,153 +203,30 @@ class LevelParser {
     if (symbolValue === '!') {
       return 'lava';
     }
-    return undefined;
   }
-  createGrid(row) {
-    if (row.length === 0) {
-      return [];
-    }
-    let splitRow = row.map(function (row) {
-      return row.split('');
-    })
-    splitRow = splitRow.map(function (row) {
-      row = row.map(function (cell) {
-        if (cell === 'x') {
-          return cell = 'wall';
-        }
-        if (cell === '!') {
-          return cell = 'lava';
-        }
-        if (cell === ' ') {
-          return undefined;
-        }
-        return cell;
-      })
-      return row;
-    })
-    return splitRow;
+  createGrid(plan) {
+    return plan.map(row => row.split('').map(cell => this.obstacleFromSymbol(cell)));
   }
-  createActors(gridItems) {
-    // gridItems
-    if (gridItems.length === 0) {
-      return [];
-    }
 
-    let emptyItems;
-    emptyItems = !gridItems.some(function (cell) {
-      return cell === undefined;
-    })
-    if (emptyItems) {
-      return [];
-    }
-
-    let self = this;
-    let actors = [];
-    gridItems.forEach(function (row, x) {
-      row.forEach(function(cell, y) {
-        let cellSymbol = self.actorFromSymbol(cell);
-        console.log(cellSymbol);
-        if (cellSymbol) {
-          actors.push(new cellSymbol(new Vector(x, y)));
+  createActors(actors) {
+    return actors.reduce((memo, el, y) => {
+      el.split('').forEach((item, x) => {
+        let constructor = this.actorFromSymbol(item);
+        if (typeof constructor === 'function') {
+          let obj = new constructor(new Vector(x, y));
+          if (obj instanceof Actor) {
+            memo.push(obj);
+            return memo;
+          }
         }
-        // new Actor(new Vector(x, y));
-        // return ;
-      })
-    })
-    return actors;
+      });
+      return memo;
+    }, []);
   }
   parse(plan) {
-    let grid = this.createGrid(plan);
-    // plan
-    // grid
-
-    let actors = this.createActors(grid);
-    // actors
-    // return new Level(this.createGrid(plan), actors);
+    return new Level(this.createGrid(plan), this.createActors(plan));
   }
 }
-
-const plan = [
-  ' @ ',
-  'x!x'
-];
-
-const actorsDict = Object.create(null);
-actorsDict['@'] = Actor;
-actorsDict['o'] = Actor;
-actorsDict['='] = Actor;
-actorsDict['|'] = Actor;
-actorsDict['v'] = Actor;
-
-const parser = new LevelParser(actorsDict);
-const level = parser.parse(plan);
-
-// level.grid.forEach((line, y) => {
-//   line.forEach((cell, x) => console.log(`(${x}:${y}) ${cell}`));
-// });
-
-// level.actors.forEach(actor => console.log(`(${actor.pos.x}:${actor.pos.y}) ${actor.type}`));
-
-
-
-
-
-class DOMDisplay {
-// Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
-constructor(dom, level) {
-// dom
-// level
-}
-}
-
-// const schema = [
-//   '         ',
-//   '         ',
-//   '    =    ',
-//   '         ',
-//   '     !xxx',
-//   ' @       ',
-//   'xxx!     ',
-//   '         '
-// ];
-// const actorDict = {
-//   '@': Player,
-//   '=': HorizontalFireball
-// }
-
-// const parser = new LevelParser(actorDict);
-// const level = parser.parse(schema);
-// DOMDisplay(document.body, level);
-
-
-function runLevel(level, domDisplay) {
-// Инициализирует процесс регулярной отрисовки текущего состояния 
-// игрового поля и обработку событий клавиатуры.
-// level
-// domDisplay
-
-// Функция возвращает промис, который разрешится статусом завершения игры, строка.
-// С учетом реализации класса Level он может принимать значения won или lost.
-}
-
-// const schema = [
-//   '         ',
-//   '         ',
-//   '    =    ',
-//   '       o ',
-//   '     !xxx',
-//   ' @       ',
-//   'xxx!     ',
-//   '         '
-// ];
-// const actorDict = {
-//   '@': Player,
-//   '=': HorizontalFireball
-// }
-// const parser = new LevelParser(actorDict);
-// const level = parser.parse(schema);
-// runLevel(level, DOMDisplay)
-//   .then(status => console.log(`Игрок ${status}`));
 
 class Fireball extends Actor {
   constructor(pos, speed) {
@@ -371,10 +238,6 @@ class Fireball extends Actor {
     return 'fireball';
   }
   getNextPosition(time = 1) {
-    // let x = this.pos.x + this.speed.x * time;
-    // let y = this.pos.y + this.speed.y * time;
-    // return new Vector(x, y);
-    // return this.pos.plus(this.speed).times(time);
     return this.pos.plus(new Vector(this.speed.x, this.speed.y).times(time));
   }
   handleObstacle() {
@@ -466,3 +329,67 @@ class Player extends Actor {
     return 'player';
   }
 }
+
+// class DOMDisplay {
+//   // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
+//   constructor(dom, level) {
+//     // dom
+//     // level
+//   }
+// }
+
+// function runLevel(level, domDisplay) {
+//   // Инициализирует процесс регулярной отрисовки текущего состояния 
+//   // игрового поля и обработку событий клавиатуры.
+//   // level
+//   // domDisplay
+
+//   // Функция возвращает промис, который разрешится статусом завершения игры, строка.
+//   // С учетом реализации класса Level он может принимать значения won или lost.
+// }
+
+// const schemas = loadLevels();
+
+// function runGame(schemas, parser, DOMDisplay){
+//   // Возвращает промис, который разрешится, когда пользователь пройдет все уровни.
+// }
+
+// const schemas = [
+//   [
+//     '         ',
+//     '         ',
+//     '    =    ',
+//     '       o ',
+//     '     !xxx',
+//     ' @       ',
+//     'xxx!     ',
+//     '         '
+//   ],
+//   [
+//     '      v  ',
+//     '    v    ',
+//     '  v      ',
+//     '        o',
+//     '        x',
+//     '@   x    ',
+//     'x        ',
+//     '         '
+//   ]
+// ];
+// const actorDict = {
+//     'v': FireRain,
+//     '@': Player,
+//     '=': HorizontalFireball,
+//     'o': Coin,
+//     '|': VerticalFireball
+// }
+// const parser = new LevelParser(actorDict);
+// runGame(schemas, parser, DOMDisplay)
+//   .then(() => console.log('Вы выиграли приз!'));
+
+const grid = [
+  new Array(3),
+  ['wall', 'wall', 'lava']
+];
+const level = new Level(grid);
+runLevel(level, DOMDisplay);
