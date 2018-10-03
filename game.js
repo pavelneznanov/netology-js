@@ -330,66 +330,35 @@ class Player extends Actor {
   }
 }
 
-// class DOMDisplay {
-//   // Отвечает за отрисовку в браузере сетки игрового поля и движущихся объектов.
-//   constructor(dom, level) {
-//     // dom
-//     // level
-//   }
-// }
-
-// function runLevel(level, domDisplay) {
-//   // Инициализирует процесс регулярной отрисовки текущего состояния 
-//   // игрового поля и обработку событий клавиатуры.
-//   // level
-//   // domDisplay
-
-//   // Функция возвращает промис, который разрешится статусом завершения игры, строка.
-//   // С учетом реализации класса Level он может принимать значения won или lost.
-// }
-
-// const schemas = loadLevels();
-
-// function runGame(schemas, parser, DOMDisplay){
-//   // Возвращает промис, который разрешится, когда пользователь пройдет все уровни.
-// }
-
-// const schemas = [
-//   [
-//     '         ',
-//     '         ',
-//     '    =    ',
-//     '       o ',
-//     '     !xxx',
-//     ' @       ',
-//     'xxx!     ',
-//     '         '
-//   ],
-//   [
-//     '      v  ',
-//     '    v    ',
-//     '  v      ',
-//     '        o',
-//     '        x',
-//     '@   x    ',
-//     'x        ',
-//     '         '
-//   ]
-// ];
-// const actorDict = {
-//     'v': FireRain,
-//     '@': Player,
-//     '=': HorizontalFireball,
-//     'o': Coin,
-//     '|': VerticalFireball
-// }
-// const parser = new LevelParser(actorDict);
-// runGame(schemas, parser, DOMDisplay)
-//   .then(() => console.log('Вы выиграли приз!'));
-
-const grid = [
-  new Array(3),
-  ['wall', 'wall', 'lava']
+const schemas = [
+  [
+    '         ',
+    '         ',
+    '    =    ',
+    '       o ',
+    '     !xxx',
+    ' @       ',
+    'xxx!     ',
+    '         '
+  ],
+  [
+    '      v  ',
+    '    v    ',
+    '  v      ',
+    '        o',
+    '        x',
+    '@   x    ',
+    'x        ',
+    '         '
+  ]
 ];
-const level = new Level(grid);
-runLevel(level, DOMDisplay);
+const actorDict = {
+    'v': FireRain,
+    '@': Player,
+    '=': HorizontalFireball,
+    'o': Coin,
+    '|': VerticalFireball
+}
+const parser = new LevelParser(actorDict);
+runGame(schemas, parser, DOMDisplay)
+  .then(() => console.log('Вы выиграли приз!'));
