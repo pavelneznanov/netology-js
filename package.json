@@ -4,7 +4,7 @@
   "description": "Netology JS game",
   "main": "index.html",
   "scripts": {
-    "start": "browser-sync start --server --files \"**/*.*\"",
+    "start": "browser-sync start --server --files \"**/*.*\" --browser opera",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
