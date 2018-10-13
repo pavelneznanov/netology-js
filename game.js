@@ -86,16 +86,12 @@ class Level {
       return actor.type === 'player';
     })
     this.height = this.grid.length;
-    this.width = this.grid.reduce(function (acc, row) {
-      let innerRow = row || [];
-      if (innerRow.length > acc) {
-        return innerRow.length
-      } else {
-        return acc;
-      }
-    }, 0);
     this.status = null;
     this.finishDelay = 1;
+    let lenghts = this.grid.map(function(row){
+      return row ? row.length : 0;
+    });
+    this.width = Math.max(...lenghts, 0);
   }
   isFinished() {
     if (this.status && this.finishDelay < 0) {
@@ -118,44 +114,23 @@ class Level {
     if (!(objectPosition instanceof Vector) || !(ObjectSize instanceof Vector)) {
       throw new Error('Объект должен быть типа Vector');
     }
-    if ((objectPosition.y + ObjectSize.y) >= this.height) {
+    if ((objectPosition.y + ObjectSize.y) >= this.height || (objectPosition.y + ObjectSize.y) >= this.height) {
       return 'lava';
     }
-    if ((objectPosition.y + ObjectSize.y) >= this.height) {
-      return 'lava';
-    }
-    if ((objectPosition.x + ObjectSize.x) > this.width) {
+    if (objectPosition.y < 0 || objectPosition.x < 0 || (objectPosition.x + ObjectSize.x) > this.width) {
       return 'wall';
     }
-    if (objectPosition.x < 0) {
-      return 'wall';
-    }
-    if (objectPosition.y < 0) {
-      return 'wall';
-    }
-    let actor = new Actor(objectPosition, ObjectSize);
-    let obstacleWall = false;
-    let obstacleLava = false;
-    this.grid.forEach(function (row, y) {
-      row.forEach(function (column, x) {
-        let currentCell = new Actor(new Vector(x, y));
-        if (actor.isIntersect(currentCell)) {
-          if (column === 'wall') {
-            obstacleWall = true;
-          }
-          if (column === 'lava') {
-            obstacleLava = true;
-          }
+    let left = Math.floor(objectPosition.x);
+    let top = Math.floor(objectPosition.y);
+    let right = Math.ceil(objectPosition.x + ObjectSize.x);
+    let bottom = Math.ceil(objectPosition.y + ObjectSize.y);
+    for (let y = top; y < bottom; y++) {
+      for (let x = left; x < right; x++) {   
+        if (this.grid[y][x]) {
+          return this.grid[y][x];
         }
-      })
-    })
-    if (obstacleWall) {
-      return 'wall';
+      }
     }
-    if (obstacleLava) {
-      return 'lava';
-    }
-    return undefined;
   }
   removeActor(removeActor) {
     let foundElements = [];
@@ -205,22 +180,21 @@ class LevelParser {
     }
   }
   createGrid(plan) {
-    return plan.map(row => row.split('').map(cell => this.obstacleFromSymbol(cell)));
+    return plan.map(row => [...row].map(cell => this.obstacleFromSymbol(cell)));
   }
-
   createActors(actors) {
-    return actors.reduce((memo, el, y) => {
-      el.split('').forEach((item, x) => {
-        let constructor = this.actorFromSymbol(item);
+    return actors.reduce((actorsArray, row, y) => {
+      [...row].forEach((symbol, x) => {
+        let constructor = this.actorFromSymbol(symbol);
         if (typeof constructor === 'function') {
           let obj = new constructor(new Vector(x, y));
           if (obj instanceof Actor) {
-            memo.push(obj);
-            return memo;
+            actorsArray.push(obj);
+            return actorsArray;
           }
         }
       });
-      return memo;
+      return actorsArray;
     }, []);
   }
   parse(plan) {
@@ -330,28 +304,6 @@ class Player extends Actor {
   }
 }
 
-const schemas = [
-  [
-    '         ',
-    '         ',
-    '    =    ',
-    '       o ',
-    '     !xxx',
-    ' @       ',
-    'xxx!     ',
-    '         '
-  ],
-  [
-    '      v  ',
-    '    v    ',
-    '  v      ',
-    '        o',
-    '        x',
-    '@   x    ',
-    'x        ',
-    '         '
-  ]
-];
 const actorDict = {
     'v': FireRain,
     '@': Player,
@@ -359,6 +311,11 @@ const actorDict = {
     'o': Coin,
     '|': VerticalFireball
 }
+
 const parser = new LevelParser(actorDict);
-runGame(schemas, parser, DOMDisplay)
-  .then(() => console.log('Вы выиграли приз!'));
+
+loadLevels()
+    .then((res) => {
+      runGame(JSON.parse(res), parser, DOMDisplay)
+        .then(() => console.log('Вы выиграли!'));
+});
