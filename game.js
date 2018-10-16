@@ -125,21 +125,18 @@ class Level {
     let right = Math.ceil(objectPosition.x + ObjectSize.x);
     let bottom = Math.ceil(objectPosition.y + ObjectSize.y);
     for (let y = top; y < bottom; y++) {
-      for (let x = left; x < right; x++) {   
-        if (this.grid[y][x]) {
-          return this.grid[y][x];
+      for (let x = left; x < right; x++) {
+        let obj = this.grid[y][x];
+        if (obj) {
+          return obj;
         }
       }
     }
   }
   removeActor(removeActor) {
-    let foundElements = [];
-    this.actors.forEach(function (actor, i) {
-      if (removeActor.type === actor.type) {
-        foundElements.push(i);
-      }
-    })
-    this.actors.splice(foundElements[0], 1);
+  if (this.actors.indexOf(removeActor) >= 0) {
+      this.actors.splice(this.actors.indexOf(removeActor), 1);
+  }
   }
   noMoreActors(actorType) {
     return !this.actors.some(function (actor) {
